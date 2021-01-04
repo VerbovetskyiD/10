@@ -1,17 +1,16 @@
 const toDoList = {
     _notes: [],
-    _texts: [],
 
     _findId(id) {
         return this._notes.findIndex((note) => note.id === id );
     },
 
-    _isUnique(text) {
-        return this._texts.includes(text);
+    _unique(text) {
+        return this._notes.find( (note) => note.text === text )
     },
 
     newNote(text) {
-        const unique = this._isUnique(text);
+        const unique = this._unique(text);
         if (!unique) {
             const note = {
                 id: Date.now(),
@@ -19,7 +18,6 @@ const toDoList = {
                 isTaskComplete: false
             };
             this._notes.push(note);
-            this._texts.push(note.text);
         }
     },
 
@@ -31,7 +29,7 @@ const toDoList = {
     },
 
     updateNote(id, text, confirm = false) {
-        const unique = this._isUnique(text);
+        const unique = this._unique(text);
         if (!unique) {
             const index = this._findId(id);
             if (index >= 0 && text && confirm) {
@@ -49,7 +47,7 @@ const toDoList = {
 
     getStat() {
         return this._notes.reduce( (acc, note) => {
-            if (acc[note.isTaskComplete]) {
+            if (note.isTaskComplete) {
                 ++acc.completed;
             } else {
                 ++acc.uncompleted;
